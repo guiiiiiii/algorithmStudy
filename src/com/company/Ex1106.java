@@ -1,7 +1,39 @@
 package com.company;
 
+import java.util.*;
+
 public class Ex1106 {
 
+    // priority queue를 사용하기 위해 inner class 작성
+    public static class Food implements Comparable<Food>{
+        private int index;          // 음식의 배열 index
+        private int totalTime;      // 음식 다먹는데 소요되는 시간
+
+        public Food(int index, int totalTime){
+            this.index = index;
+            this.totalTime = totalTime;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public int getTotalTime(){
+            return totalTime;
+        }
+
+        public void setTotalTime(int totalTime) {
+            this.totalTime = totalTime;
+        }
+
+        @Override
+        public int compareTo(Food o) {
+            // 우리는 음식의 총 섭취시간이 작은것이 우선순위가 높으므로 아래와같이 반환
+            if(this.totalTime < o.getTotalTime())       return -1;
+            else if(this.totalTime == o.getTotalTime()) return 0;
+            else                                        return 1;
+        }
+    }
     public static void main(String[] args) {
         /*****
          *
@@ -18,10 +50,88 @@ public class Ex1106 {
         int k = 5;
         int[] food_times = {3, 1, 2};
 
-        int result = solution(food_times, k);
+        //int result = solution(food_times, k);
+        int result = solutionWithAnswer(food_times, k);
         System.out.println("Ex11 06의 결과값은 >>> "+result);
     }
 
+    // 해설 보고 풀어본 풀이
+    public static int solutionWithAnswer(int[] food_times, int k){
+        int answer = 0;
+        int totalSum = 0;
+        int sumFoodTime = 0;
+
+        // Step1. 우선순위 큐 생성
+        PriorityQueue<Food> foodQueue = new PriorityQueue<>();
+
+        // Step2. 큐에 주어진 음식 배열 삽입
+        for(int index=0; index<food_times.length; index++){
+            foodQueue.add(new Food(index,food_times[index]));
+
+            // Step3. 주어진 음식배열의 움식을 다 먹으면 몇초가 소요되는지 계산한다
+            totalSum += food_times[index];
+        }
+
+        // Step4. 주어진 음식 배열의합보다 k가 같거나 크면 -1을 반환한다
+        if(totalSum <= k) return -1;
+        else {
+
+            Boolean flag = true;
+            while (flag) {
+                // Step5. foodQueue에서 가장 우선순위가 높은(먹는시간이 적은) 음식을 꺼낸다
+                //          이 음식을 다먹는 데에 소요되는 시간은 { foodQueue의 길이 * 이 음식을 먹는데에 소요되는시간 }
+                Food o = foodQueue.peek();
+
+                // Step6. 가장 우선순위가 높은 음식을 다 먹는데에 소요되는 시간이 k보다 작은 경우는 이 음식을 다 먹을 수 있다는 것
+                if (k > (foodQueue.size() * o.getTotalTime())) {
+                    k -= (foodQueue.size() * o.getTotalTime());
+                    foodQueue.poll();
+
+                    // Step7. 순회한 시간만큼 나머지 음식들의 남은시간 재조정
+                    foodQueue.forEach(food -> {
+                        food.setTotalTime(food.getTotalTime() - o.getTotalTime());
+                    });
+                } else {
+                    flag = false;
+                }
+            }
+
+            // Step8. 그렇지 않은 경우는 한바퀴 돌지 못하는 경우이므로 index순서대로 임시 배열에 넣는다
+            ArrayList<Food> foodArr = new ArrayList<>();
+            while (!foodQueue.isEmpty()) {
+                foodArr.add(foodQueue.poll());
+            }
+
+            // Step9. 임시 배열을 index순으로 정렬
+            Collections.sort(foodArr, new Comparator<Food>() {
+                @Override
+                public int compare(Food o1, Food o2) {
+                    return Integer.compare(o1.getIndex(), o2.getIndex());
+                }
+            });
+
+            // Step10. 남은 k만큼
+            int arrIndex = 0;
+            int count = 0;
+            while (count <= k) {
+                // 1보다 크면 뺄수있음
+                if (foodArr.get(arrIndex).getTotalTime() >= 1) {
+                    answer = foodArr.get(arrIndex).getIndex();
+                    count++;
+                }
+
+                if (arrIndex >= foodArr.size()-1 ) arrIndex = 0;
+                else arrIndex++;
+
+            }
+            answer = arrIndex;
+        }
+
+        return answer;
+
+    }
+    
+    // 내가 한 풀이 (카카오 코테 28점나옴..)
     public static int solution(int[] food_times, int k){
 
         int totalSum =0;

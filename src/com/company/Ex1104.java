@@ -23,11 +23,31 @@ public class Ex1104 {
         System.out.println("공백으로 구분하여 "+n+" 개의 수 입력");
         String coinStr = sc.nextLine();
 
-        int result = solution(n, coinStr);
+       // int result = solution(n, coinStr);
+        int result = solutionWithAnswer(n, coinStr);
 
-
+        System.out.println("Ex11-04 결과값은 >>> "+result);
     }
 
+    public static int solutionWithAnswer(int n, String coinStr){
+        // Step1. 주어진 동전String을 Integer형 arrayList로 변환
+        Integer[] tempArr = Arrays.stream(coinStr.split(" ")).mapToInt(Integer::parseInt).boxed().toArray(Integer[]::new);
+        ArrayList<Integer> coinArr = new ArrayList<>();
+
+        // Step2. 오름차순으로 배열 정렬
+        Collections.addAll(coinArr, tempArr);
+        Collections.sort(coinArr);
+
+        // Step3. target 설정
+        int target = 1;
+        for(int coin : coinArr) {
+            // 만들 수 없는 금액을 찾았을 때 반복 종료
+            if (target < coin) break;
+            target += coin;
+        }
+        return target;
+
+    }
 
     public static int solution(int N, String coinStr){
 
