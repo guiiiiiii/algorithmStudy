@@ -1,4 +1,4 @@
-package com.company;
+package com.company.chap03;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package com.company;
+package com.company.chap04;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
