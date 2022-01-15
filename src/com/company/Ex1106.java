@@ -57,16 +57,16 @@ public class Ex1106 {
 
     // 해설 보고 풀어본 풀이
     public static int solutionWithAnswer(int[] food_times, int k){
-        int answer = 0;
-        int totalSum = 0;
-        int sumFoodTime = 0;
+        // 마지막까지 효율성 0점이 나온 이유는 int형으로 사용했기 때문
+        // 문제에서 주어진 k의 값이 2*10^13인데 이는 int형의 max value인 2^13-1을 넘어서기 때문에 long으로 사용해야한다
+        long totalSum = 0;
 
         // Step1. 우선순위 큐 생성
         PriorityQueue<Food> foodQueue = new PriorityQueue<>();
 
         // Step2. 큐에 주어진 음식 배열 삽입
         for(int index=0; index<food_times.length; index++){
-            foodQueue.add(new Food(index,food_times[index]));
+            foodQueue.add(new Food(index+1,food_times[index]));
 
             // Step3. 주어진 음식배열의 움식을 다 먹으면 몇초가 소요되는지 계산한다
             totalSum += food_times[index];
@@ -76,24 +76,19 @@ public class Ex1106 {
         if(totalSum <= k) return -1;
         else {
 
-            Boolean flag = true;
-            while (flag) {
-                // Step5. foodQueue에서 가장 우선순위가 높은(먹는시간이 적은) 음식을 꺼낸다
-                //          이 음식을 다먹는 데에 소요되는 시간은 { foodQueue의 길이 * 이 음식을 먹는데에 소요되는시간 }
-                Food o = foodQueue.peek();
+            totalSum = 0;                    // 먹기위해 사용한시간
+            long previous = 0;               // 직전에 다 먹은 음식시간
+            long length = food_times.length; //남은 음식의 개수
 
+            // Step5. foodQueue에서 가장 우선순위가 높은(먹는시간이 적은) 음식을 꺼낸다
+            //          이 음식을 다먹는 데에 소요되는 시간은 { foodQueue의 길이 * (이 음식을 먹는데에 소요되는시간 -지금까지 먹은 음식회전수) }
+            while (k >= totalSum + (foodQueue.peek().getTotalTime() - previous) *length) {
                 // Step6. 가장 우선순위가 높은 음식을 다 먹는데에 소요되는 시간이 k보다 작은 경우는 이 음식을 다 먹을 수 있다는 것
-                if (k > (foodQueue.size() * o.getTotalTime())) {
-                    k -= (foodQueue.size() * o.getTotalTime());
-                    foodQueue.poll();
+                int now = foodQueue.poll().getTotalTime();
+                totalSum += (now - previous) *length;
+                length -= 1;
+                previous = now;
 
-                    // Step7. 순회한 시간만큼 나머지 음식들의 남은시간 재조정
-                    foodQueue.forEach(food -> {
-                        food.setTotalTime(food.getTotalTime() - o.getTotalTime());
-                    });
-                } else {
-                    flag = false;
-                }
             }
 
             // Step8. 그렇지 않은 경우는 한바퀴 돌지 못하는 경우이므로 index순서대로 임시 배열에 넣는다
@@ -111,23 +106,9 @@ public class Ex1106 {
             });
 
             // Step10. 남은 k만큼
-            int arrIndex = 0;
-            int count = 0;
-            while (count <= k) {
-                // 1보다 크면 뺄수있음
-                if (foodArr.get(arrIndex).getTotalTime() >= 1) {
-                    answer = foodArr.get(arrIndex).getIndex();
-                    count++;
-                }
-
-                if (arrIndex >= foodArr.size()-1 ) arrIndex = 0;
-                else arrIndex++;
-
-            }
-            answer = arrIndex;
+            return  foodArr.get((int)((k-totalSum) % length)).getIndex();
         }
 
-        return answer;
 
     }
     
