@@ -16,6 +16,7 @@ public class Ex1207 {
 
     }
 
+    // 입력된 숫자의 자릿수 합을 계산
     public static int calculate(String num){
         int result = Integer.parseInt(num.substring(0,1));
 
@@ -28,6 +29,7 @@ public class Ex1207 {
     public static String solution(String score){
         String result = "READY";
 
+        // 주어진 문자열의 절반의길이만큼 잘라낸뒤 자릿수의 합을 계산한다
         String leftScore = score.substring(0,score.length()/2);
         String rightScore = score.substring(score.length()/2);
 

@@ -16,7 +16,33 @@ public class Ex1208 {
         System.out.println("문자열 입력 >>> ");
         String str = sc.nextLine();
 
-        System.out.println("결과는 >>> "+solution(str));
+        //System.out.println("결과는 >>> "+solution(str));
+        System.out.println("결과는 >>> "+solutionWithAnswer(str));
+    }
+
+    public static String solutionWithAnswer(String str){
+        String result = "";
+
+        ArrayList<Character> arr = new ArrayList<>();
+        int value = 0;
+
+        for(int index = 0; index <str.length(); index++){
+            if(Character.isLetter(str.charAt(index))){
+                arr.add(str.charAt(index));
+            }else{
+                // '0'을 뺴주는 이유 => '1'은 아스키코드로 49, '0'은 48이다
+                // 따라서 '0'을 뺌으로서 아스키코드로 연산했을때 정수형이 나올수 있도록 한다
+                value += str.charAt(index)- '0';
+            }
+        }
+
+        Collections.sort(arr);
+
+        for(Character c : arr)  result += c;
+
+        if(value != 0)      result+= value;
+
+        return result;
     }
 
     public static String solution(String str ){
