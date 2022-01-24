@@ -14,8 +14,53 @@ public class Ex1209 {
         System.out.println("압축할 문자열 s입력 >>>> ");
         String s = sc.nextLine();
 
-        int result = solution(s);
+        //int result = solution(s);
+        int result = solutionWithAnswer(s);
         System.out.println("Ex12 - 9의 결과값은 >> "+result);
+    }
+
+    public static int solutionWithAnswer(String s){
+        int answer = s.length();
+        String prev = "";                   // 비교하게될 문자열
+        String str = s;
+        String compressedStr;          // 현재까지 압축된 문자열
+        int compress = 1;
+
+        // Step1. 반복할수있는 최대 문자열의 길이는 주어진 문자열 길이의 절반을 넘어설 수 없으므로 문자열 길이의 절반만큼 순회한다
+        for(int index = 1; index <= s.length()/2; index++){
+
+            prev = s.substring(0,index);
+            compressedStr= "";
+
+            for(int i=index; i<=s.length()-index; i = i+index){
+                    // Step2. i번째 글자부터 index만큼이 prev와 같다면 압축할 수 있는 글자
+                    if(s.substring(i,i+index).equals(prev)){
+                        compress++;
+
+                    }else{
+                        // Step3. 같지않다면 더이상 압축할수 없으므로 현재까지 압축된 문자열에 더해준다
+                        compressedStr +=  (compress > 1) ? compress+prev : prev;
+                        compress = 1;
+
+                        prev = s.substring(i,i+index);
+                    }
+
+                    str = s.substring(i+index);
+
+            }
+
+            compressedStr += (compress > 1) ? compress+prev : prev;
+            compress = 1;
+
+            if(str.length() != index ) compressedStr += str;
+
+            // Step3. 현재 압축된 문자열과 지금까지 압축된 문자열의 길이를 비교
+            answer = Math.min(answer, compressedStr.length());
+
+
+        }
+
+        return answer;
     }
 
     // 문자열 s를 주면 앞에서부터 몇글자가 반복되는지 return해주는 함수
