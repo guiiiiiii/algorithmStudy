@@ -72,7 +72,7 @@ public class Ex1211 {
 
         // Step2. 사과 위치 보드에 insert
         for(String loc : apple_loc){
-            board[Integer.parseInt(loc.split(" ")[0])][Integer.parseInt(loc.split(" ")[1])] = 1;
+            board[Integer.parseInt(loc.split(" ")[1])][Integer.parseInt(loc.split(" ")[0])] = 1;
         }
 
         //Step3. 회전변수에 끝까지갈것 하나 더 넣기
