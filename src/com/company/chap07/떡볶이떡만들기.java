@@ -16,26 +16,24 @@ public class 떡볶이떡만들기 {
     }
 
     static public int findMaxHdight(Integer[] heightArr, int height){
+        int mid = (0+heightArr[heightArr.length-1])/2;
         int prev = 0;
-        int mediumIndex = (0+heightArr.length-1)/2;
-        int prevIndex = mediumIndex;
 
         while(true){
             int compare = 0;
 
-            for(int index = mediumIndex; index< heightArr.length; index++){
-                compare += (heightArr[index]-heightArr[mediumIndex]);
+            for(int index = 0; index< heightArr.length; index++){
+                compare += (heightArr[index]-mid < 0) ? 0 : heightArr[index]-mid;
             }
 
             if(compare >= height){
-                prev = compare;
-                prevIndex = mediumIndex;
-                mediumIndex++;
+                prev = mid;
+                mid++;
             }else if(compare < height){
                 break;
             }
         }
 
-        return heightArr[prevIndex];
+        return prev;
     }
 }
