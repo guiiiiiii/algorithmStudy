@@ -16,10 +16,15 @@ public class 떡볶이떡만들기 {
     }
 
     static public int findMaxHdight(Integer[] heightArr, int height){
-        int mid = (0+heightArr[heightArr.length-1])/2;
+        int start = 0;
+        int end = heightArr[heightArr.length-1];
         int prev = 0;
+        int mid ;
 
         while(true){
+            if(start > end) break;
+
+            mid = (start+end)/2;
             int compare = 0;
 
             for(int index = 0; index< heightArr.length; index++){
@@ -28,9 +33,9 @@ public class 떡볶이떡만들기 {
 
             if(compare >= height){
                 prev = mid;
-                mid++;
+                start = mid+1;
             }else if(compare < height){
-                break;
+                end = mid-1;
             }
         }
 
